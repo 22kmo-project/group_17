@@ -9,7 +9,7 @@ router.get('/',
                 response.json(err);
             } else {
                 console.log(dbResult);
-                response.json(dbResult[0]);
+                response.json(dbResult);
             }
         })
     });
