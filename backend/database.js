@@ -1,6 +1,6 @@
 const mysql = require('mysql');
 const connection = mysql.createPool({
-  host: '127.0.0.1',
+  host: 'localhost',
   user: 'group_17',
   password: 'netpass',
   database: 'group_17'
