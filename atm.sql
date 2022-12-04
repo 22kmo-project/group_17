@@ -1,4 +1,0 @@
-CREATE DATABASE group_17;
-CREATE USER 'group_17'@'localhost'
-IDENTIFIED WITH mysql_native_password BY 'netpass';
-GRANT ALL on group_17.* to 'group_17'@'localhost';
