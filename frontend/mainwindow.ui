@@ -117,7 +117,8 @@
         <x>270</x>
         <y>50</y>
         <width>211</width>
-    </property>
+     </property>
+   </widget>
     <widget class="QWidget" name="welcome_page">
      <widget class="QPushButton" name="begin_button">
       <property name="geometry">
