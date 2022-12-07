@@ -8,7 +8,8 @@ const account_right = {
     return db.query('select * from account_right', callback);
   },
   add: function(add_data, callback) {
-      'insert into account_right (id_account,id_card) values(?,?)',
+    return db.query(
+    'insert into account_right (id_account,id_card) values(?,?)',
       [add_data.id_account,add_data.id_card],
       callback
       );
@@ -20,7 +21,7 @@ const account_right = {
     return db.query(
       'update account_right set id_account=?,id_card=? where id_account_right=?',
       [update_data.id_account, update_data.id_card, id],
-      callback);
+      callback
     );
   }
 };
