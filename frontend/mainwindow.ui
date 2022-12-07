@@ -117,6 +117,7 @@
         <x>270</x>
         <y>50</y>
         <width>211</width>
+       </rect>
      </property>
    </widget>
     <widget class="QWidget" name="welcome_page">
