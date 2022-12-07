@@ -5,4 +5,5 @@ const connection = mysql.createPool({
   password: 'netpass',
   database: 'group_17'
 });
+
 module.exports = connection;
