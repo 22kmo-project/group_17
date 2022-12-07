@@ -279,7 +279,8 @@
         <x>270</x>
         <y>50</y>
         <width>211</width>
-       <string>Aloita käyttö painamalla nappia.</string>
+        <string>Aloita käyttö painamalla nappia.</string>
+       </rect>
       </property>
      </widget>
     </widget>
