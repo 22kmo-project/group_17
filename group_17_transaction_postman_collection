@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "c174c1b2-0ffd-4bc6-ae64-ab034a1eeda6",
+		"name": "group_17",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24753365"
+	},
+	"item": [
+		{
+			"name": "GetAllTransaction",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/transaction",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"transaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetOneTransaction",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/transaction/2",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"transaction",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddTransaction",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id_transaction",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "id_account",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "transaction_date",
+							"value": "2055-05-15 15:15:15",
+							"type": "text"
+						},
+						{
+							"key": "transaction_type",
+							"value": "debit",
+							"type": "text"
+						},
+						{
+							"key": "sum",
+							"value": "500",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/transaction",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"transaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateTransaction",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "transaction_date",
+							"value": "2024-10-24 17:42:46",
+							"type": "text"
+						},
+						{
+							"key": "transaction_type",
+							"value": "credit",
+							"type": "text"
+						},
+						{
+							"key": "sum",
+							"value": "350",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/transaction/3",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"transaction",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteTransaction",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/transaction/4",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"transaction",
+						"4"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

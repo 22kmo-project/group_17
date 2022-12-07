@@ -1,0 +1,153 @@
+{
+	"info": {
+		"_postman_id": "771314f5-2cbc-4989-98d3-53f03a4f22ff",
+		"name": "group_17",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24640071"
+	},
+	"item": [
+		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "GetAllAccounts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/account",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetOneAccount",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/account/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"account",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddAccount",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "account_number",
+									"value": "FI112222555114323",
+									"type": "text"
+								},
+								{
+									"key": "balance",
+									"value": "1700.92",
+									"type": "text"
+								},
+								{
+									"key": "bank_name",
+									"value": "Osuuspankki",
+									"type": "text"
+								},
+								{
+									"key": "account_type",
+									"value": "Debit",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/account",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateAccount",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "account_number",
+									"value": "FI112222555114323",
+									"type": "text"
+								},
+								{
+									"key": "balance",
+									"value": "1700.23",
+									"type": "text"
+								},
+								{
+									"key": "bank_name",
+									"value": "Nordea",
+									"type": "text"
+								},
+								{
+									"key": "account_type",
+									"value": "Credit",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/account/6",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"account",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteAccount",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/account/8",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"account",
+								"8"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
