@@ -2,7 +2,7 @@ const db = require('../database');
 
 const card_right = {
   getById: function(id, callback) {
-    return db.query('select * card_right where id_card_right=?', [id], callback);
+    return db.query('select * from card_right where id_card_right=?', [id], callback);
   },
   getAll: function(callback) {
     return db.query('select * from card_right', callback);

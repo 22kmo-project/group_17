@@ -49,4 +49,16 @@ function generateAccessToken(username) {
   return jwt.sign(username, process.env.MY_TOKEN, { expiresIn: '1200s' }); //Token kestää 20 min
 }
 
+// Jos tulee ongelma kirjautumisen kanssa, alla olevalla tekee loginin ilman encryptattua pin-koodia. Pitää korvata vaan yllä olevaan, vastaavaan kohtaan.
+/*if (dbResult.length > 0) {
+  if (login_pincode == 1234) {
+    console.log("success");
+    const token = generateAccessToken({ username: login_username });
+      response.send(token);
+  }
+  else {
+    console.log("ongelma")
+  }
+ */ 
+
 module.exports=router;
