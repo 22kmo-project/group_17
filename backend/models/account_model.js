@@ -23,6 +23,11 @@ const account = {
       [update_data.account_number, update_data.balance, update_data.bank_name, update_data.account_type, id],
       callback
     );
-  }
+  },
+
+  getOneAccountInformation: function(id,callback){
+    return db.query('select account_number, bank_name, account_holder, account_right, account_type, balance from account inner join account_right on account.id_account=account_right.id_account_right where account_number =?',[id],callback);
+}
+
 };
 module.exports = account;
