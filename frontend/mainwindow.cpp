@@ -21,6 +21,11 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::setWebToken(const QByteArray &newWebToken)
+{
+    mytn = newWebToken;
+}
+
 //Aikakatkaisuun liittyvä, käyttöliittymän resetointi
 void MainWindow::resetInterface()
 {
@@ -57,11 +62,6 @@ void MainWindow::on_login_button_clicked()
         QString site_url=MyUrl::getBaseUrl()+"/login";
         QNetworkRequest request((site_url));
         request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-        //WEBTOKEN ALKU
-        QByteArray myToken="Bearer eyJhbG...";
-        request.setRawHeader(QByteArray("Authorization"),(myToken));
-        //WEBTOKEN LOPPU
 
         loginManager = new QNetworkAccessManager(this);
         connect(loginManager, SIGNAL(finished (QNetworkReply*)), this, SLOT(loginSlot(QNetworkReply*)));
@@ -101,7 +101,14 @@ void MainWindow::loginSlot(QNetworkReply *reply)
             }
             // Jos kirjautumistunnukset kunnossa, siirrytään tilinvalintaan.
             else {
+                timer->stop();
+                ui->pin_input_edit->clear();
                 ui->stackedWidget->setCurrentIndex(3);
+
+                // WEBTOKEN LUONTI
+                setWebToken("Bearer "+response_data);
+                fetchAccounts();
+                // yks vai kaks tiliä?
             }
         }
     }
@@ -109,4 +116,79 @@ void MainWindow::loginSlot(QNetworkReply *reply)
     loginManager->deleteLater();
 }
 
+void MainWindow::fetchAccounts()
+{
+    QString site_url=MyUrl::getBaseUrl()+"/account";
+    QNetworkRequest request((site_url));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    //WEBTOKEN ALKU
+    request.setRawHeader(QByteArray("Authorization"),(mytn));
+    //WEBTOKEN LOPPU
+    fetchAccountManager = new QNetworkAccessManager(this);
 
+    connect(fetchAccountManager, SIGNAL(finished (QNetworkReply*)), this, SLOT(fetchAccountSlot(QNetworkReply*)));
+
+    reply = fetchAccountManager->get(request);
+}
+
+void MainWindow::fetchAccountSlot(QNetworkReply *reply)
+{
+     response_data=reply->readAll();
+     qDebug()<<"DATA : "+response_data;
+     QJsonDocument json_doc = QJsonDocument::fromJson(response_data);
+     QJsonArray json_array = json_doc.array();
+     QString accounts;
+     foreach (const QJsonValue &value, json_array) {
+        QJsonObject json_obj = value.toObject();
+        accounts+=json_obj["account_type"].toString();
+     }
+
+     ui->label->setText(accounts);
+
+     reply->deleteLater();
+     fetchAccountManager->deleteLater();
+}
+
+
+
+void MainWindow::on_nosto20_button_clicked()
+{
+    QString site_url=MyUrl::getBaseUrl()+"/account";
+    QNetworkRequest request((site_url));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    //WEBTOKEN ALKU
+    request.setRawHeader(QByteArray("Authorization"),(mytn));
+    //WEBTOKEN LOPPU
+    withdrawalManager = new QNetworkAccessManager(this);
+
+    connect(withdrawalManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(withdrawalSlot(QNetworkReply*)));
+
+    reply = withdrawalManager->get(request);
+
+
+    /*void MainWindow::getbalance()
+    {
+        //HAKEE TILIN SALDON
+        QString site_url="http://localhost:3000/account/"+QString::number(id_user);
+        QNetworkRequest request(site_url);
+        //WEBTOKEN ALKU
+        QByteArray myToken="Bearer "+token.toLocal8Bit();
+        request.setRawHeader(QByteArray("Authorization"),(myToken));
+        //WEBTOKEN LOPPU
+        getBalanceManager = new QNetworkAccessManager(this);
+        connect(getBalanceManager, SIGNAL(finished (QNetworkReply*)), this, SLOT(getBalanceSlot(QNetworkReply*)));
+        reply = getBalanceManager->get(request);
+    }*/
+
+{
+    QJsonObject jsonObj;
+    jsonObj.insert("account_number",account_number);
+    jsonObj.insert("balance",balance);
+
+    jsonObj.insert("bank_name",bank_name);
+    jsonObj.insert("account_type",account_type);
+    jsonObj.insert("account_right",account_right);
+    jsonObj.insert("account_holder",account_holder);
+
+}
+}

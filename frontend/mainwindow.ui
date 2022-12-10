@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>5</number>
     </property>
     <widget class="QWidget" name="welcome_page">
      <widget class="QPushButton" name="begin_button">
@@ -320,8 +320,362 @@ Ota yhteyttä pankkiisi.
     </widget>
     <widget class="QWidget" name="choose_account_page"/>
     <widget class="QWidget" name="choose_function_page"/>
-    <widget class="QWidget" name="choose_withdrawal_sum_page"/>
-    <widget class="QWidget" name="withdrawal_manual_input_page"/>
+    <widget class="QWidget" name="choose_withdrawal_sum_page">
+     <widget class="QLabel" name="nosto_label">
+      <property name="geometry">
+       <rect>
+        <x>440</x>
+        <y>0</y>
+        <width>91</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>35</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Nosto</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="rahasumma_label">
+      <property name="geometry">
+       <rect>
+        <x>360</x>
+        <y>50</y>
+        <width>241</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>18</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Valitse haluamasi rahasumma:</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="nosto20_button">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>140</y>
+        <width>131</width>
+        <height>101</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>20</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="sulje_button">
+      <property name="geometry">
+       <rect>
+        <x>780</x>
+        <y>420</y>
+        <width>171</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>25</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>SULJE</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="nosto100_button">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>280</y>
+        <width>131</width>
+        <height>101</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>100</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="nosto40_button">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>140</y>
+        <width>131</width>
+        <height>101</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>40</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="nosto200_button">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>280</y>
+        <width>131</width>
+        <height>101</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>200</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="nosto60_button">
+      <property name="geometry">
+       <rect>
+        <x>390</x>
+        <y>140</y>
+        <width>131</width>
+        <height>101</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>60</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="muu_summa_button">
+      <property name="geometry">
+       <rect>
+        <x>390</x>
+        <y>280</y>
+        <width>131</width>
+        <height>101</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>MUU SUMMA</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="tilinumero_label">
+      <property name="geometry">
+       <rect>
+        <x>620</x>
+        <y>140</y>
+        <width>71</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Tilinumero:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="pankki_label">
+      <property name="geometry">
+       <rect>
+        <x>620</x>
+        <y>160</y>
+        <width>61</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Pankki:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="tilin_omistaja_label">
+      <property name="geometry">
+       <rect>
+        <x>620</x>
+        <y>180</y>
+        <width>91</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Tilin omistaja:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="kayttooikeus_label">
+      <property name="geometry">
+       <rect>
+        <x>620</x>
+        <y>200</y>
+        <width>81</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Käyttöoikeus:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="tilityyppi_label">
+      <property name="geometry">
+       <rect>
+        <x>620</x>
+        <y>220</y>
+        <width>81</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Tilityyppi:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="tilin_saldo_label">
+      <property name="geometry">
+       <rect>
+        <x>620</x>
+        <y>240</y>
+        <width>71</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Tilin saldo:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>730</x>
+        <y>140</y>
+        <width>221</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>730</x>
+        <y>160</y>
+        <width>221</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_3">
+      <property name="geometry">
+       <rect>
+        <x>730</x>
+        <y>180</y>
+        <width>221</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_4">
+      <property name="geometry">
+       <rect>
+        <x>730</x>
+        <y>200</y>
+        <width>221</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_5">
+      <property name="geometry">
+       <rect>
+        <x>730</x>
+        <y>230</y>
+        <width>221</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_6">
+      <property name="geometry">
+       <rect>
+        <x>730</x>
+        <y>240</y>
+        <width>221</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="withdrawal_manual_input_page">
+     <widget class="QLabel" name="nosto2_label">
+      <property name="geometry">
+       <rect>
+        <x>450</x>
+        <y>-10</y>
+        <width>101</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>35</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Nosto</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="rahasumma2_label">
+      <property name="geometry">
+       <rect>
+        <x>400</x>
+        <y>40</y>
+        <width>211</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>15</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Syötä haluamasi rahasumma:</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="muu_summa_lineEdit">
+      <property name="geometry">
+       <rect>
+        <x>400</x>
+        <y>170</y>
+        <width>201</width>
+        <height>71</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="sulje2_button">
+      <property name="geometry">
+       <rect>
+        <x>780</x>
+        <y>410</y>
+        <width>171</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>25</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>SULJE</string>
+      </property>
+     </widget>
+    </widget>
     <widget class="QWidget" name="withdrawal_success_page"/>
     <widget class="QWidget" name="balance_page"/>
     <widget class="QWidget" name="transactions_page"/>
