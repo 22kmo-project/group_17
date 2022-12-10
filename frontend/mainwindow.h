@@ -23,6 +23,9 @@ public:
     ~MainWindow();
     int tries = 3;
     int leftover_tries;
+    QByteArray mytn;
+
+    void setWebToken(const QByteArray &newWebToken);
 
 public slots:
     void resetInterface();
@@ -31,11 +34,13 @@ private slots:
     void on_begin_button_clicked();
     void on_login_button_clicked();
     void loginSlot (QNetworkReply *reply);
-    void fetchCardAccess();
+    void fetchAccounts();
+    void fetchAccountSlot(QNetworkReply *reply);
 
 private:
     Ui::MainWindow *ui;
     QNetworkAccessManager *loginManager;
+    QNetworkAccessManager *fetchAccountManager;
     QNetworkReply *reply;
     QByteArray response_data;
     QString username;

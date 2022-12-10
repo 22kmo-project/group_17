@@ -21,6 +21,11 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::setWebToken(const QByteArray &newWebToken)
+{
+    mytn = newWebToken;
+}
+
 //Aikakatkaisuun liittyvä, käyttöliittymän resetointi
 void MainWindow::resetInterface()
 {
@@ -57,11 +62,6 @@ void MainWindow::on_login_button_clicked()
         QString site_url=MyUrl::getBaseUrl()+"/login";
         QNetworkRequest request((site_url));
         request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-        //WEBTOKEN ALKU
-        QByteArray myToken="Bearer eyJhbG...";
-        request.setRawHeader(QByteArray("Authorization"),(myToken));
-        //WEBTOKEN LOPPU
 
         loginManager = new QNetworkAccessManager(this);
         connect(loginManager, SIGNAL(finished (QNetworkReply*)), this, SLOT(loginSlot(QNetworkReply*)));
@@ -101,12 +101,54 @@ void MainWindow::loginSlot(QNetworkReply *reply)
             }
             // Jos kirjautumistunnukset kunnossa, siirrytään tilinvalintaan.
             else {
+                timer->stop();
+                ui->pin_input_edit->clear();
                 ui->stackedWidget->setCurrentIndex(3);
+
+                // WEBTOKEN LUONTI
+                setWebToken("Bearer "+response_data);
+                fetchAccounts();
+                // yks vai kaks tiliä?
             }
         }
     }
     reply->deleteLater();
     loginManager->deleteLater();
 }
+
+void MainWindow::fetchAccounts()
+{
+    QString site_url=MyUrl::getBaseUrl()+"/account";
+    QNetworkRequest request((site_url));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    //WEBTOKEN ALKU
+    request.setRawHeader(QByteArray("Authorization"),(mytn));
+    //WEBTOKEN LOPPU
+    fetchAccountManager = new QNetworkAccessManager(this);
+
+    connect(fetchAccountManager, SIGNAL(finished (QNetworkReply*)), this, SLOT(fetchAccountSlot(QNetworkReply*)));
+
+    reply = fetchAccountManager->get(request);
+}
+
+void MainWindow::fetchAccountSlot(QNetworkReply *reply)
+{
+     response_data=reply->readAll();
+     qDebug()<<"DATA : "+response_data;
+     QJsonDocument json_doc = QJsonDocument::fromJson(response_data);
+     QJsonArray json_array = json_doc.array();
+     QString accounts;
+     foreach (const QJsonValue &value, json_array) {
+        QJsonObject json_obj = value.toObject();
+        accounts+=json_obj["account_type"].toString();
+     }
+
+     ui->label->setText(accounts);
+
+     reply->deleteLater();
+     fetchAccountManager->deleteLater();
+}
+
+
 
 
