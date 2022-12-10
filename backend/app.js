@@ -33,6 +33,7 @@ var userRouter = require('./routes/user');
 var account_rightRouter = require('./routes/account_right');
 var card_rightRouter = require('./routes/card_right');
 var loginRouter = require('./routes/login');
+var account_informationRouter = require('./routes/account_information');
 
 var app = express();
 app.use(logger('dev'));
@@ -51,5 +52,6 @@ app.use('/card', cardRouter);
 app.use('/user', userRouter);
 app.use('/account_right', account_rightRouter);
 app.use('/card_right', card_rightRouter);
+app.use('/account_information', account_informationRouter);
 
 module.exports = app;
