@@ -38,7 +38,7 @@ router.get('/:id?',
 
             } else {
 
-                response.json(dbResult[0]);
+                response.json(dbResult);
 
             }
 

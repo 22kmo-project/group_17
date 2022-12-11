@@ -59,6 +59,8 @@ void MainWindow::on_login_button_clicked()
     if(tries != 0) {
         username=ui->username_input_edit->text();
         pin_code=ui->pin_input_edit->text();
+
+        //Asetetaan talteen username
         setUsername(username);
         qDebug()<<logged_un;
 
@@ -94,14 +96,17 @@ void MainWindow::loginSlot(QNetworkReply *reply)
     qDebug()<<test;
     ui->warning_label->setStyleSheet("color: red;");
 
+    //Jos palvelinongelmia
     if(login_data.length()==0){
         ui->warning_label->setText(warning1);
     }
+    //Jos tietokantaongelmia
     else {
         if(QString::compare(login_data,"-4078")==0){
             ui->warning_label->setText(warning2);
         }
         else {
+            //Jos virheellinen tietojen syöttö
             if(test==0){
                 QString leftover_tries_string = QString::number(leftover_tries);
                 //ui->username_input_edit->clear();
@@ -109,7 +114,7 @@ void MainWindow::loginSlot(QNetworkReply *reply)
                 ui->warning_label->setText(warning3 + leftover_tries_string);
                 timer->start(30000);
             }
-            // Jos kirjautumistunnukset kunnossa, siirrytään tilinvalintaan.
+            // Jos kirjautumistunnukset kunnossa, siirrytään tilinvalintaan
             else {
                 qDebug()<<logged_un;
 
@@ -119,6 +124,7 @@ void MainWindow::loginSlot(QNetworkReply *reply)
                 // WEBTOKEN LUONTI
                 setWebToken("Bearer "+login_data);
 
+                // Lähdetään tarkistamaan onko useampi kuin yksi tili kortissa
                 fetchUserID();
                 }
             }
@@ -129,6 +135,7 @@ void MainWindow::loginSlot(QNetworkReply *reply)
 
 void MainWindow::fetchUserID()
 {
+    //Lähetään hakemaan id_useria GET:llä usernamea käyttäen
     qDebug()<<"onko fetch "+logged_un;
     QString site_url=MyUrl::getBaseUrl()+"/login/"+logged_un;
     QNetworkRequest request((site_url));
@@ -145,6 +152,7 @@ void MainWindow::fetchUserID()
 
 void MainWindow::fetchUserIDSlot(QNetworkReply *reply)
 {
+    // Luetaan saatu json objekti ja talletetaan arvo
     qDebug()<<"onko fetchslot "+logged_un;
     fetch_user_data=reply->readAll();
     QJsonDocument json_doc = QJsonDocument::fromJson(fetch_user_data);
@@ -152,6 +160,7 @@ void MainWindow::fetchUserIDSlot(QNetworkReply *reply)
     userid = QString::number(json_obj["id_user"].toInt());
     qDebug()<<"Asiakkaan id on: " +userid;
 
+    //Kutsutaan funktio jonka avulla asetetaan haettu id_user sekä selvitetään kytkettyjen tilien määrä
     fetchAccounts();
 
     reply->deleteLater();
@@ -160,6 +169,7 @@ void MainWindow::fetchUserIDSlot(QNetworkReply *reply)
 
 void MainWindow::fetchAccounts()
 {
+    // GET:llä haetaan ne kaikki tilikytkökset joihin on kyseinen id_user kytketty
     qDebug()<<"Asiakkaan arvo edelleen:" + userid;
     QString site_url=MyUrl::getBaseUrl()+"/account_right";
     QNetworkRequest request((site_url));
@@ -186,14 +196,18 @@ void MainWindow::fetchAccountSlot(QNetworkReply *reply)
         total_userids+= QString::number(json_obj["id_user"].toInt())+ " , ";
      }
 
+     //Tarkistetaan kuinka monta kertaa id_user on mainittu...
      connected_accounts = total_userids.count(userid);
      qDebug()<< total_userids.count(userid);
 
+     //...ja suoritetaan tuloksen mukainen sivunvaihto
      switch(connected_accounts) {
          case 1:
              ui->stackedWidget->setCurrentIndex(4);
+             timer->start(30000);
          case 2:
              ui->stackedWidget->setCurrentIndex(3);
+             timer->start(30000);
      }
 
      reply->deleteLater();
