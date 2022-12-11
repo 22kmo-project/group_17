@@ -26,6 +26,11 @@ void MainWindow::setWebToken(const QByteArray &newWebToken)
     mytn = newWebToken;
 }
 
+void MainWindow::setUsername(const QString &loggedUser)
+{
+    logged_un = loggedUser;
+}
+
 //Aikakatkaisuun liittyvä, käyttöliittymän resetointi
 void MainWindow::resetInterface()
 {
@@ -54,6 +59,8 @@ void MainWindow::on_login_button_clicked()
     if(tries != 0) {
         username=ui->username_input_edit->text();
         pin_code=ui->pin_input_edit->text();
+        setUsername(username);
+        qDebug()<<logged_un;
 
         QJsonObject jsonObj;
         jsonObj.insert("username",username);
@@ -67,29 +74,31 @@ void MainWindow::on_login_button_clicked()
         connect(loginManager, SIGNAL(finished (QNetworkReply*)), this, SLOT(loginSlot(QNetworkReply*)));
 
         reply = loginManager->post(request, QJsonDocument(jsonObj).toJson());
+
     }
     // Jos yrityskerrat nollissa, asetetaan kortille lukitus
     else {
+        //ui->username_input_edit->clear();
+        ui->pin_input_edit->clear();
         ui->stackedWidget->setCurrentIndex(2);
         timer->start(10000);
     }
-    timer->start(30000);
-    qDebug()<<"Timer started.";
 }
 
 void MainWindow::loginSlot(QNetworkReply *reply)
 {
-    response_data=reply->readAll();
-    qDebug()<<response_data;
-    int test=QString::compare(response_data,"false");
+    login_data=reply->readAll();
+    qDebug()<<login_data;
+
+    int test=QString::compare(login_data,"false");
     qDebug()<<test;
     ui->warning_label->setStyleSheet("color: red;");
 
-    if(response_data.length()==0){
+    if(login_data.length()==0){
         ui->warning_label->setText(warning1);
     }
     else {
-        if(QString::compare(response_data,"-4078")==0){
+        if(QString::compare(login_data,"-4078")==0){
             ui->warning_label->setText(warning2);
         }
         else {
@@ -98,57 +107,95 @@ void MainWindow::loginSlot(QNetworkReply *reply)
                 //ui->username_input_edit->clear();
                 ui->pin_input_edit->clear();
                 ui->warning_label->setText(warning3 + leftover_tries_string);
+                timer->start(30000);
             }
             // Jos kirjautumistunnukset kunnossa, siirrytään tilinvalintaan.
             else {
+                qDebug()<<logged_un;
+
                 timer->stop();
                 ui->pin_input_edit->clear();
-                ui->stackedWidget->setCurrentIndex(3);
 
                 // WEBTOKEN LUONTI
-                setWebToken("Bearer "+response_data);
-                fetchAccounts();
-                // yks vai kaks tiliä?
+                setWebToken("Bearer "+login_data);
+
+                fetchUserID();
+                }
             }
         }
-    }
     reply->deleteLater();
     loginManager->deleteLater();
 }
 
-void MainWindow::fetchAccounts()
+void MainWindow::fetchUserID()
 {
-    QString site_url=MyUrl::getBaseUrl()+"/account";
+    qDebug()<<"onko fetch "+logged_un;
+    QString site_url=MyUrl::getBaseUrl()+"/login/"+logged_un;
     QNetworkRequest request((site_url));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     //WEBTOKEN ALKU
     request.setRawHeader(QByteArray("Authorization"),(mytn));
     //WEBTOKEN LOPPU
-    fetchAccountManager = new QNetworkAccessManager(this);
+    userIdManager = new QNetworkAccessManager(this);
 
-    connect(fetchAccountManager, SIGNAL(finished (QNetworkReply*)), this, SLOT(fetchAccountSlot(QNetworkReply*)));
+    connect(userIdManager, SIGNAL(finished (QNetworkReply*)), this, SLOT(fetchUserIDSlot(QNetworkReply*)));
 
-    reply = fetchAccountManager->get(request);
+    reply = userIdManager->get(request);
+}
+
+void MainWindow::fetchUserIDSlot(QNetworkReply *reply)
+{
+    qDebug()<<"onko fetchslot "+logged_un;
+    fetch_user_data=reply->readAll();
+    QJsonDocument json_doc = QJsonDocument::fromJson(fetch_user_data);
+    QJsonObject json_obj = json_doc.object();
+    userid = QString::number(json_obj["id_user"].toInt());
+    qDebug()<<"Asiakkaan id on: " +userid;
+
+    fetchAccounts();
+
+    reply->deleteLater();
+    userIdManager->deleteLater();
+}
+
+void MainWindow::fetchAccounts()
+{
+    qDebug()<<"Asiakkaan arvo edelleen:" + userid;
+    QString site_url=MyUrl::getBaseUrl()+"/account_right";
+    QNetworkRequest request((site_url));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    //WEBTOKEN ALKU
+    request.setRawHeader(QByteArray("Authorization"),(mytn));
+    //WEBTOKEN LOPPU
+    fetchAccManager = new QNetworkAccessManager(this);
+
+    connect(fetchAccManager, SIGNAL(finished (QNetworkReply*)), this, SLOT(fetchAccountSlot(QNetworkReply*)));
+
+    reply = fetchAccManager->get(request);
 }
 
 void MainWindow::fetchAccountSlot(QNetworkReply *reply)
 {
-     response_data=reply->readAll();
-     qDebug()<<"DATA : "+response_data;
-     QJsonDocument json_doc = QJsonDocument::fromJson(response_data);
+     fetch_acc_data=reply->readAll();
+     qDebug()<<"DATA : "+fetch_acc_data;
+     QJsonDocument json_doc = QJsonDocument::fromJson(fetch_acc_data);
      QJsonArray json_array = json_doc.array();
-     QString accounts;
+     QString total_userids;
      foreach (const QJsonValue &value, json_array) {
         QJsonObject json_obj = value.toObject();
-        accounts+=json_obj["account_type"].toString();
+        total_userids+= QString::number(json_obj["id_user"].toInt())+ " , ";
      }
 
-     ui->label->setText(accounts);
+     connected_accounts = total_userids.count(userid);
+     qDebug()<< total_userids.count(userid);
+
+     switch(connected_accounts) {
+         case 1:
+             ui->stackedWidget->setCurrentIndex(4);
+         case 2:
+             ui->stackedWidget->setCurrentIndex(3);
+     }
 
      reply->deleteLater();
-     fetchAccountManager->deleteLater();
+     fetchAccManager->deleteLater();
 }
-
-
-
-

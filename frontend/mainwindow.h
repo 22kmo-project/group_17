@@ -23,9 +23,13 @@ public:
     ~MainWindow();
     int tries = 3;
     int leftover_tries;
+    int connected_accounts;
+    QString userid;
     QByteArray mytn;
+    QString logged_un;
 
     void setWebToken(const QByteArray &newWebToken);
+    void setUsername(const QString &loggedUser);
 
 public slots:
     void resetInterface();
@@ -34,15 +38,20 @@ private slots:
     void on_begin_button_clicked();
     void on_login_button_clicked();
     void loginSlot (QNetworkReply *reply);
+    void fetchUserID();
+    void fetchUserIDSlot(QNetworkReply *reply);
     void fetchAccounts();
     void fetchAccountSlot(QNetworkReply *reply);
 
 private:
     Ui::MainWindow *ui;
     QNetworkAccessManager *loginManager;
-    QNetworkAccessManager *fetchAccountManager;
+    QNetworkAccessManager *userIdManager;
+    QNetworkAccessManager *fetchAccManager;
     QNetworkReply *reply;
-    QByteArray response_data;
+    QByteArray login_data;
+    QByteArray fetch_acc_data;
+    QByteArray fetch_user_data;
     QString username;
     QString pin_code;
     QString warning1 = "PALVELIN EI VASTAA. YRITÄ MYÖHEMMIN UUDELLEEN.";
