@@ -8,6 +8,8 @@
 #include <QNetworkAccessManager>
 #include <QJsonDocument>
 #include <QTimer>
+#include <QTableWidget>
+#include <QtableWidgetItem>
 
 
 QT_BEGIN_NAMESPACE
@@ -31,7 +33,10 @@ private slots:
     void on_begin_button_clicked();
     void on_login_button_clicked();
     void loginSlot (QNetworkReply *reply);
-    void fetchCardAccess();
+
+    void on_tili_tilanne_table_cellActivated();
+
+    void on_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -44,5 +49,7 @@ private:
     QString warning2 = "VIRHE TIETOKANTA YHTEYDESSÄ. YRITÄ MYÖHEMMIN UUDELLEEN.";
     QString warning3 = "VIRHEELLINEN KÄYTTÄJÄTUNNUS TAI PIN-KOODI! YRITÄ UUDELLEEN. \nYRITYSKERTOJA JÄLJELLÄ: ";
     QTimer *timer;
+
+    QString transaction;
 };
 #endif // MAINWINDOW_H

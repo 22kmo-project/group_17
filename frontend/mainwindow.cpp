@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QTimer>
+#include <QTableWidget>
+#include <QtableWidgetItem>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -9,11 +11,12 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     //Asetetaan aloitussivu
-    ui->stackedWidget->setCurrentIndex(0);
+   // ui->stackedWidget->setCurrentIndex(0);
     //Luodaan timeri jonka avulla hoidetaan aikakatkaisut
     timer = new QTimer(this);
     timer->setSingleShot(true);
     connect(timer, SIGNAL(timeout()), this, SLOT(resetInterface()));
+
 }
 
 MainWindow::~MainWindow()
@@ -109,4 +112,47 @@ void MainWindow::loginSlot(QNetworkReply *reply)
     loginManager->deleteLater();
 }
 
+void MainWindow::on_tili_tilanne_table_cellActivated()
+{
+    QTableWidget *table = new QTableWidget(this);
+    table->setRowCount(5);
+    table->setColumnCount(3);
+
+    QStringList hLabels;
+    hLabels <<"Tapahtumapäivä" <<"Tapahtumalaji" <<"Summa";
+    table->setHorizontalHeaderLabels(hLabels);
+
+    //-Insert Data
+
+    for(int i = 0 ; i < table->rowCount(); i++)
+    {
+        QTableWidgetItem *item;
+        for(int j = 0; j < table->columnCount(); j++)
+        {
+            item = new QTableWidgetItem;
+
+            if(j == 0)
+                item->setText("Tapahtumapäivä" + QString::number(i));
+            if(j == 1)
+                item->setText("Tapahtumalaji" + QString::number(i));
+            if(j == 2)
+                item->setText("Summa" + QString::number(i));
+
+            table->setItem(i,j,item);
+        }
+    }
+
+    table->setAlternatingRowColors(true);
+
+    //-Cell Items Properties
+    table->setSelectionMode(QAbstractItemView::SingleSelection);
+    table->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+    this->setCentralWidget(table);
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    on_tili_tilanne_table_cellActivated();
+}
 

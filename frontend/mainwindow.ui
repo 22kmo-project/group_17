@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>8</number>
     </property>
     <widget class="QWidget" name="welcome_page">
      <widget class="QPushButton" name="begin_button">
@@ -323,7 +323,365 @@ Ota yhteyttä pankkiisi.
     <widget class="QWidget" name="choose_withdrawal_sum_page"/>
     <widget class="QWidget" name="withdrawal_manual_input_page"/>
     <widget class="QWidget" name="withdrawal_success_page"/>
-    <widget class="QWidget" name="balance_page"/>
+    <widget class="QWidget" name="balance_page">
+     <widget class="QLabel" name="tili_tilanne_label">
+      <property name="geometry">
+       <rect>
+        <x>370</x>
+        <y>10</y>
+        <width>251</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>35</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Tilin tilanne</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="tili_tilanne_sulje_button">
+      <property name="geometry">
+       <rect>
+        <x>790</x>
+        <y>390</y>
+        <width>161</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>24</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Sulje</string>
+      </property>
+     </widget>
+     <widget class="QTableWidget" name="tili_tilanne_table">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>160</y>
+        <width>481</width>
+        <height>281</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <attribute name="horizontalHeaderMinimumSectionSize">
+       <number>37</number>
+      </attribute>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>156</number>
+      </attribute>
+      <attribute name="verticalHeaderMinimumSectionSize">
+       <number>21</number>
+      </attribute>
+      <attribute name="verticalHeaderDefaultSectionSize">
+       <number>51</number>
+      </attribute>
+      <row>
+       <property name="text">
+        <string>1</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>2</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>3</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>4</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>5</string>
+       </property>
+      </row>
+      <column>
+       <property name="text">
+        <string>Tapahtumapäivä</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Tapahtumalaji</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Summa</string>
+       </property>
+      </column>
+     </widget>
+     <widget class="QLabel" name="tilinumero">
+      <property name="geometry">
+       <rect>
+        <x>630</x>
+        <y>160</y>
+        <width>71</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Tilinumero:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="pankki">
+      <property name="geometry">
+       <rect>
+        <x>630</x>
+        <y>190</y>
+        <width>51</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Pankki:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="tilinomistaja">
+      <property name="geometry">
+       <rect>
+        <x>630</x>
+        <y>220</y>
+        <width>81</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Tilinomistaja:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="kayttooikeus">
+      <property name="geometry">
+       <rect>
+        <x>630</x>
+        <y>250</y>
+        <width>81</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Käyttöoikeus:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="tilityyppi">
+      <property name="geometry">
+       <rect>
+        <x>630</x>
+        <y>280</y>
+        <width>61</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Tilityyppi:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="tilin_saldo">
+      <property name="geometry">
+       <rect>
+        <x>630</x>
+        <y>310</y>
+        <width>71</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Tilin saldo:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="tilinumero_2">
+      <property name="geometry">
+       <rect>
+        <x>740</x>
+        <y>170</y>
+        <width>171</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="tilinumero_3">
+      <property name="geometry">
+       <rect>
+        <x>740</x>
+        <y>190</y>
+        <width>171</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="tilinumero_4">
+      <property name="geometry">
+       <rect>
+        <x>740</x>
+        <y>220</y>
+        <width>171</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="tilinumero_5">
+      <property name="geometry">
+       <rect>
+        <x>760</x>
+        <y>250</y>
+        <width>171</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="tilinumero_6">
+      <property name="geometry">
+       <rect>
+        <x>760</x>
+        <y>270</y>
+        <width>171</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="tilinumero_7">
+      <property name="geometry">
+       <rect>
+        <x>750</x>
+        <y>310</y>
+        <width>171</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>100</y>
+        <width>80</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>PushButton</string>
+      </property>
+     </widget>
+     <zorder>tili_tilanne_label</zorder>
+     <zorder>tili_tilanne_sulje_button</zorder>
+     <zorder>tilinumero</zorder>
+     <zorder>pankki</zorder>
+     <zorder>tilinomistaja</zorder>
+     <zorder>kayttooikeus</zorder>
+     <zorder>tilityyppi</zorder>
+     <zorder>tilin_saldo</zorder>
+     <zorder>tili_tilanne_table</zorder>
+     <zorder>tilinumero_2</zorder>
+     <zorder>tilinumero_3</zorder>
+     <zorder>tilinumero_4</zorder>
+     <zorder>tilinumero_5</zorder>
+     <zorder>tilinumero_6</zorder>
+     <zorder>tilinumero_7</zorder>
+     <zorder>pushButton</zorder>
+    </widget>
     <widget class="QWidget" name="transactions_page"/>
     <widget class="QWidget" name="last_page"/>
    </widget>
