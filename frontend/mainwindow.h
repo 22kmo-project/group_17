@@ -61,7 +61,6 @@ private:
     QNetworkAccessManager *fetchAccManager;
     QNetworkReply *reply;
     QByteArray login_data;
-    QByteArray fetch_accid_data;
     QByteArray fetch_userid_data;
     QByteArray fetch_acc_amount_data;
     QString username;

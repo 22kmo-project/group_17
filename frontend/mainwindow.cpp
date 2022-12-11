@@ -196,12 +196,13 @@ void MainWindow::fetchHowManyAccSlot(QNetworkReply *reply)
 {
     //Lähdetään tarkistamaan kuinka monta tiliä on kytketty ja otetaan id_account talteen
      fetch_acc_amount_data=reply->readAll();
-     qDebug()<<"DATA : "+fetch_accid_data;
+     qDebug()<<"DATA : "+fetch_acc_amount_data;
      QJsonDocument json_doc = QJsonDocument::fromJson(fetch_acc_amount_data);
      QJsonArray json_array = json_doc.array();
      QString total_userids;
      QStringList account_ids;
      QString acc_ids = "";
+
      foreach (const QJsonValue &value, json_array) {
         QJsonObject json_obj = value.toObject();
         total_userids += QString::number(json_obj["id_user"].toInt());
