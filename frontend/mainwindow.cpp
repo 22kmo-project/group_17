@@ -21,6 +21,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+//Asetaan webtokeni siten, että käytettävissä aina tarvittaessa
 void MainWindow::setWebToken(const QByteArray &newWebToken)
 {
     mytn = newWebToken;
@@ -48,10 +49,17 @@ void MainWindow::on_begin_button_clicked()
     qDebug()<<"Timer Started.";
 }
 
-// Sisäänkirjautumisnapin toiminnot
+//Sisäänkirjautumisnapin toiminnot
 void MainWindow::on_login_button_clicked()
 {
+    when_login_button();
+}
+
+//Funktio joka kutsutaan login-painikkeella
+void MainWindow::when_login_button()
+{
     timer->stop();
+    //Joka klikkausyrityksellä vähennetään yrityskertoja
     leftover_tries = tries - 1;
     tries = leftover_tries;
 
@@ -154,24 +162,24 @@ void MainWindow::fetchUserIDSlot(QNetworkReply *reply)
 {
     // Luetaan saatu json objekti ja talletetaan arvo
     qDebug()<<"onko fetchslot "+logged_un;
-    fetch_user_data=reply->readAll();
-    QJsonDocument json_doc = QJsonDocument::fromJson(fetch_user_data);
+    fetch_userid_data=reply->readAll();
+    QJsonDocument json_doc = QJsonDocument::fromJson(fetch_userid_data);
     QJsonObject json_obj = json_doc.object();
     userid = QString::number(json_obj["id_user"].toInt());
     qDebug()<<"Asiakkaan id on: " +userid;
 
     //Kutsutaan funktio jonka avulla asetetaan haettu id_user sekä selvitetään kytkettyjen tilien määrä
-    fetchAccounts();
+    fetchHowManyAcc();
 
     reply->deleteLater();
     userIdManager->deleteLater();
 }
 
-void MainWindow::fetchAccounts()
+void MainWindow::fetchHowManyAcc()
 {
     // GET:llä haetaan ne kaikki tilikytkökset joihin on kyseinen id_user kytketty
     qDebug()<<"Asiakkaan arvo edelleen:" + userid;
-    QString site_url=MyUrl::getBaseUrl()+"/account_right";
+    QString site_url=MyUrl::getBaseUrl()+"/account_right/"+userid;
     QNetworkRequest request((site_url));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     //WEBTOKEN ALKU
@@ -179,22 +187,33 @@ void MainWindow::fetchAccounts()
     //WEBTOKEN LOPPU
     fetchAccManager = new QNetworkAccessManager(this);
 
-    connect(fetchAccManager, SIGNAL(finished (QNetworkReply*)), this, SLOT(fetchAccountSlot(QNetworkReply*)));
+    connect(fetchAccManager, SIGNAL(finished (QNetworkReply*)), this, SLOT(fetchHowManyAccSlot(QNetworkReply*)));
 
     reply = fetchAccManager->get(request);
 }
 
-void MainWindow::fetchAccountSlot(QNetworkReply *reply)
+void MainWindow::fetchHowManyAccSlot(QNetworkReply *reply)
 {
-     fetch_acc_data=reply->readAll();
-     qDebug()<<"DATA : "+fetch_acc_data;
-     QJsonDocument json_doc = QJsonDocument::fromJson(fetch_acc_data);
+    //Lähdetään tarkistamaan kuinka monta tiliä on kytketty ja otetaan id_account talteen
+     fetch_acc_amount_data=reply->readAll();
+     qDebug()<<"DATA : "+fetch_accid_data;
+     QJsonDocument json_doc = QJsonDocument::fromJson(fetch_acc_amount_data);
      QJsonArray json_array = json_doc.array();
      QString total_userids;
+     QStringList account_ids;
+     QString acc_ids = "";
      foreach (const QJsonValue &value, json_array) {
         QJsonObject json_obj = value.toObject();
-        total_userids+= QString::number(json_obj["id_user"].toInt())+ " , ";
+        total_userids += QString::number(json_obj["id_user"].toInt());
+        account_ids << QString::number(json_obj["id_account"].toInt());
      }
+     account_id_1 = account_ids.at(0);
+     account_id_2 = account_ids.at(1);
+
+     qDebug()<<total_userids;
+     qDebug()<<account_ids;
+     qDebug()<< "1. Account_id on: " +account_id_1;
+     qDebug()<< "2. Account_id on: " +account_id_2;
 
      //Tarkistetaan kuinka monta kertaa id_user on mainittu...
      connected_accounts = total_userids.count(userid);
@@ -213,3 +232,4 @@ void MainWindow::fetchAccountSlot(QNetworkReply *reply)
      reply->deleteLater();
      fetchAccManager->deleteLater();
 }
+
