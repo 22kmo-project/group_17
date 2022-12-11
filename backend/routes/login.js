@@ -44,6 +44,18 @@ router.post('/',
   }
 );
 
+router.get('/:id?',function(request, response){
+  const id=request.params.id;
+  login.saveIdUser(id,function(err,dbResult){
+      if(err){
+          response.json(err);
+      }
+      else{
+          response.json(dbResult[0]);
+      }
+  })
+});
+
 function generateAccessToken(username) {
   dotenv.config();
   return jwt.sign(username, process.env.MY_TOKEN, { expiresIn: '1200s' }); //Token kestää 20 min

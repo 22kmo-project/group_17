@@ -2,7 +2,7 @@ const db = require('../database');
 
 const transaction = {
   getById: function(id, callback) {
-    return db.query('select * from transaction where id_transaction=?', [id], callback);
+    return db.query('select * from transaction where id_account=?', [id], callback);
   },
   getAll: function(callback) {
     return db.query('select * from transaction', callback);

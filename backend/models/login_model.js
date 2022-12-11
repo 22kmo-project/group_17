@@ -5,7 +5,11 @@ const login={
       return db.query(
         'SELECT username, pin_code from user inner join card on user.id_user=card.id_user WHERE username = ?'
         ,[username], callback); 
-    }
+    },
+  saveIdUser: function(username, callback) {
+    return db.query(
+      'SELECT id_user from user WHERE username =?',[username], callback); 
+  }
 };
           
 module.exports = login;
