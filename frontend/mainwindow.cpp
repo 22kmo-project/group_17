@@ -23,6 +23,10 @@ MainWindow::MainWindow(QWidget *parent)
         timer3 =new QTimer(this);
         timer3->setSingleShot(true);
         connect(timer3, SIGNAL(timeout()), this, SLOT(moveToEndPage()));
+    //Luodaan rahat luukussa tekstin näyttävä timer
+        timer4 =new QTimer(this);
+        timer4->setSingleShot(true);
+        connect(timer4, SIGNAL(timeout()), this, SLOT(ShowMoneyInHatch()));
 }
 
 MainWindow::~MainWindow()
@@ -286,8 +290,10 @@ void MainWindow::fetchHowManyAccSlot(QNetworkReply *reply)
      if(connected_accounts == 2)
      {
              fetch_DataForCompare(account_id_1);
+             QString a_id = temp_acc_id;
              delay();
              fetch_DataForCompare(account_id_2);
+             QString b_id = temp_acc_id;
              ui->stackedWidget->setCurrentIndex(3);
              timer->start(30000);
      }
@@ -394,6 +400,7 @@ void MainWindow::CompareDataSlot (QNetworkReply *reply)
        {
            current_account_number=tallennus_an1;
            qDebug()<<"tämänhetkinen tilinumero on:"+current_account_number;
+           //temp_acc_id =
        }
 
        else
@@ -552,10 +559,16 @@ void MainWindow::moveToEndPage()
     qDebug()<<"Timer Started.";
 }
 
+//aikakatkaisuun liittyvä, rahat luukussa tekstin asetus
+void MainWindow::ShowMoneyInHatch()
+{
+    qDebug()<<"Show rahat luukussa label.";
+    ui->setelit_syottoluukussa_label->setText("...Setelit syöttöluukussa, ota rahat!");
+    //aloitetaan myös uusi 10 sekunnin timer joka palauttaa käyttäjän takaisin aloitus näyttöön
+}
 
 int MainWindow::Substract_withdrawal(int e)
 {
-
     double current_balance = balance.toDouble();
     chosen_sum=e;
 
@@ -566,6 +579,7 @@ int MainWindow::Substract_withdrawal(int e)
     else
     {
         updated_balance=current_balance - e;
+        timer4->start(5000);
         timer3->start(10000);
         ui->stackedWidget->setCurrentIndex(7);
         qDebug()<<"päivitetty saldo on doublena:"<<updated_balance;
@@ -671,7 +685,7 @@ void MainWindow::on_nosta_muu_summa_button_clicked()
 
 void MainWindow::logWithdrawal()
 {
-    qDebug()<<"account_id: "+temp_acc_id;
+    qDebug()<<"account_id log: "+temp_acc_id;
     qDebug()<<"Tämä päivä: "+QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
     QJsonObject jsonObj;
     jsonObj.insert("id_account", temp_acc_id);
