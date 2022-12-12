@@ -14,6 +14,11 @@ MainWindow::MainWindow(QWidget *parent)
     timer = new QTimer(this);
     timer->setSingleShot(true);
     connect(timer, SIGNAL(timeout()), this, SLOT(resetInterface()));
+
+    //Luodaan pääkäyttöliittymään palauttava timer
+        timer2 = new QTimer(this);
+        timer2->setSingleShot(true);
+        connect(timer2, SIGNAL(timeout()), this, SLOT(returnToMainInterface()));
 }
 
 MainWindow::~MainWindow()
@@ -47,6 +52,21 @@ void MainWindow::setSaved_AccountType2(const QString &savedAT2)
 void MainWindow::setSaved_AccountNumber2(const QString &savedAN2)
 {
     tallennus_an2 = savedAN2;
+}
+
+void MainWindow::setAccId(const QString &usedAccId)
+{
+    temp_acc_id = usedAccId;
+}
+
+void MainWindow::setAccoundId(const QString &usedAccountId)
+{
+    account_id_1 = usedAccountId;
+}
+
+void MainWindow::setAccoundId2(const QString &usedAccountId2)
+{
+    account_id_2 = usedAccountId2;
 }
 
 //Aikakatkaisuun liittyvä, käyttöliittymän resetointi
@@ -185,9 +205,9 @@ void MainWindow::fetchUserIDSlot(QNetworkReply *reply)
     userid = QString::number(json_obj["id_user"].toInt());
     qDebug()<<"Asiakkaan id on: " +userid;
 
-    //Kutsutaan funktio jonka avulla asetetaan haettu id_user sekä selvitetään kytkettyjen tilien määrä
+    //Kutsutaan funktiot id_user:in avulla
     fetchHowManyAcc();
-
+    fetch_user_full_name();
     reply->deleteLater();
     userIdManager->deleteLater();
 }
@@ -225,8 +245,18 @@ void MainWindow::fetchHowManyAccSlot(QNetworkReply *reply)
         total_userids += QString::number(json_obj["id_user"].toInt());
         account_ids << QString::number(json_obj["id_account"].toInt());
      }
-     account_id_1 = account_ids.at(0);
-     account_id_2 = account_ids.at(1);
+     int arraysize = account_ids.size();
+     qDebug()<<"taulukon koko:"<<arraysize;
+
+     if(arraysize == 1)
+     {
+        setAccoundId(account_ids.at(0));
+     }
+     else
+     {
+     setAccoundId(account_ids.at(0));
+     setAccoundId2(account_ids.at(1));
+     }
 
      qDebug()<<total_userids;
      qDebug()<<account_ids;
@@ -235,35 +265,27 @@ void MainWindow::fetchHowManyAccSlot(QNetworkReply *reply)
 
      //Tarkistetaan kuinka monta kertaa id_user on mainittu...
      connected_accounts = total_userids.count(userid);
-     qDebug()<< total_userids.count(userid);
+     qDebug()<<"näin monta käyttäjä mainittu:"<<total_userids.count(userid);
 
 
      //...ja suoritetaan tuloksen mukainen sivunvaihto
-     switch(connected_accounts) {
-        //siirrytään suoraan pääkäyttöliittymään
-         case 1:
+     //siirrytään suoraan pääkäyttöliittymään
+     if(connected_accounts == 1)
+        {
+             fetch_DataForCompare(account_id_1);
+             delay();
+             OnlyOneAccount(tallennus_an1);
              ui->stackedWidget->setCurrentIndex(4);
              timer->start(30000);
+        }
         // siirrytään tilin valintaan
-         case 2:
+     if(connected_accounts == 2)
+     {
+             fetch_DataForCompare(account_id_1);
+             delay();
+             fetch_DataForCompare(account_id_2);
              ui->stackedWidget->setCurrentIndex(3);
              timer->start(30000);
-
-
-             fetch_DataForCompare(account_id_1);
-             //setSaved_AccountType1(test_at1), setSaved_AccountNumber1(test_an1);
-             QString testaus_arvo_1at=test_at1;
-             qDebug()<<"testaus tulos:" +testaus_arvo_1at;
-
-             fetch_DataForCompare(account_id_2);
-
-             //setSaved_AccountType2(tallennus_at2), setSaved_AccountNumber2(tallennus_an2);
-
-
-             //qDebug()<<"tilintyyppi1.1:"+tallennus_at1+" ja tilinumero:"+tallennus_an1;
-             //qDebug()<<"tilintyyppi3:"+tallennus_at2+" ja tilinumero:"+tallennus_an2;
-
-             //fetch_account_information();
      }
 
      reply->deleteLater();
@@ -317,6 +339,7 @@ void MainWindow::user_full_nameSlot (QNetworkReply *reply)
     //haetaan kortin tyyppi ja numero vertailua varten
 void MainWindow::fetch_DataForCompare(QString id)
 {
+    setAccId(id);
     QString site_url=MyUrl::getBaseUrl()+"/account/"+id;
     QNetworkRequest request((site_url));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
@@ -331,15 +354,26 @@ void MainWindow::fetch_DataForCompare(QString id)
 //tallennetaan testiarvot vertailua varten muuttujiin
 void MainWindow::CompareDataSlot (QNetworkReply *reply)
 {
-
+    qDebug()<<"onko acc_id:" +temp_acc_id ;
     response_CompareData=reply->readAll();
     QJsonDocument json_doc = QJsonDocument::fromJson(response_CompareData);
     QJsonObject json_obj = json_doc.object();
 
     test_at1=json_obj["account_type"].toString();
     test_an1=json_obj["account_number"].toString();
+    //tallennetaan tilityyppit ja tilinumerot id_account perusteella
 
-    qDebug()<<"tilintyyppi:"+test_at1+" ja tilinumero:"+test_an1;
+    if(temp_acc_id == account_id_1)
+    {
+            setSaved_AccountType1(test_at1), setSaved_AccountNumber1(test_an1);
+            qDebug()<<"tallennettu tilityyppi:"+tallennus_at1+" ja tallennettu tilinumero:"+tallennus_an1;
+    }
+
+    if(temp_acc_id == account_id_2)
+    {
+            setSaved_AccountType2(test_at1), setSaved_AccountNumber2(test_an1);
+            qDebug()<<"tallennettu tilityyppi2:"+tallennus_at2+" ja tallennettu tilinumero2:"+tallennus_an2;
+    }
 
     reply->deleteLater();
     CompareDataManager->deleteLater();
@@ -353,19 +387,31 @@ void MainWindow::CompareDataSlot (QNetworkReply *reply)
 
        if(a==debit)
        {
-           current_account_number=test_an1;
+           current_account_number=tallennus_an1;
+           qDebug()<<"tämänhetkinen tilinumero on:"+current_account_number;
        }
 
        else
        {
-           current_account_number=test_an2;
+           current_account_number=tallennus_an2;
+           qDebug()<<"tämänhetkinen tilinumero on:"+current_account_number;
        }
-       qDebug()<<"tämänhetkinen tilinumero on:"+current_account_number;
+
         return a;
 
     }
 
+    //asetetaan current_account_number yhdelle tilille
+    QString MainWindow::OnlyOneAccount(QString a)
 
+    {
+
+        current_account_number=a;
+        qDebug()<<"tämänhetkinen tilinumero yhdelle käyttäjälle on:"+current_account_number;
+
+        return a;
+
+    }
 
     //haetaan tilitiedot
 void MainWindow::fetch_account_information()
@@ -378,14 +424,12 @@ void MainWindow::fetch_account_information()
     //WEBTOKEN LOPPU
     account_informationManager = new QNetworkAccessManager(this);
     connect(account_informationManager, SIGNAL(finished (QNetworkReply*)), this, SLOT(account_informationSlot(QNetworkReply*)));
-
     reply = account_informationManager->get(request);
 }
     //tallennetaan tilitiedot muuttujiin
 void MainWindow::account_informationSlot (QNetworkReply *reply)
 {
-
- response_account_information=reply->readAll();
+response_account_information=reply->readAll();
  QJsonDocument json_doc = QJsonDocument::fromJson(response_account_information);
  QJsonObject json_obj = json_doc.object();
 
@@ -397,7 +441,6 @@ void MainWindow::account_informationSlot (QNetworkReply *reply)
     account_right=json_obj["account_right"].toString();
 
     //testausta
-
     qDebug()<<"pankin nimi:"+bank_name;
     qDebug()<<"tilin omistaja:"+account_holder;
     qDebug()<<"tilityyppi:"+account_type;
@@ -408,22 +451,28 @@ void MainWindow::account_informationSlot (QNetworkReply *reply)
     reply->deleteLater();
     account_informationManager->deleteLater();
  }
-
+//lisätään delay
+void MainWindow::delay()
+{
+    QTime dieTime= QTime::currentTime().addSecs(1);
+    while (QTime::currentTime() < dieTime)
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+}
 
 // tästä alaspäin nappien toimintoja
 void MainWindow::on_debit_button_clicked()
 {
     CreditOrDebit_testing(debit);
-
     ui->stackedWidget->setCurrentIndex(4);
     timer->start(30000);
     qDebug()<<"Timer Started.";
 }
 
+
+
 void MainWindow::on_credit_button_clicked()
 {
     CreditOrDebit_testing(credit);
-
     ui->stackedWidget->setCurrentIndex(4);
     timer->start(30000);
     qDebug()<<"Timer Started.";
