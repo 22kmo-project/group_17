@@ -9,8 +9,8 @@ const transaction = {
   },
   add: function(add_data, callback) {
     return db.query(
-      'insert into transaction (transaction_date,transaction_type,sum) values(?,?,?)',
-      [add_data.transaction_date, add_data.transaction_type, add_data.sum],
+      'insert into transaction (id_account,transaction_date,transaction_type,sum) values(?,?,?,?)',
+      [add_data.id_account,add_data.transaction_date, add_data.transaction_type, add_data.sum],
       callback
     );
   },
