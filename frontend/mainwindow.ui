@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>5</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="welcome_page">
      <widget class="QPushButton" name="begin_button">
@@ -106,7 +106,7 @@
        </font>
       </property>
       <property name="text">
-       <string>tt1298</string>
+       <string/>
       </property>
       <property name="maxLength">
        <number>6</number>

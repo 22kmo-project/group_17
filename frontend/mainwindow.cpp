@@ -401,7 +401,7 @@ void MainWindow::CompareDataSlot (QNetworkReply *reply)
        {
            current_account_number=tallennus_an1;
            qDebug()<<"tämänhetkinen tilinumero on:"+current_account_number;
-           temp_acc_id =
+           //temp_acc_id =
        }
 
        else
@@ -429,7 +429,6 @@ void MainWindow::CompareDataSlot (QNetworkReply *reply)
     //haetaan tilitiedot
 void MainWindow::fetch_account_information()
 {
-    qDebug()<<"temp fetch_account_information: "+temp_acc_id;
     QString site_url=MyUrl::getBaseUrl()+"/account_information/"+current_account_number;
     QNetworkRequest request((site_url));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
@@ -484,7 +483,6 @@ void MainWindow::delay()
 // tästä alaspäin nappien toimintoja
 void MainWindow::on_debit_button_clicked()
 {
-    qDebug()<<"temp debit button painettu: "+temp_acc_id;
     CreditOrDebit_testing(debit);
     ui->stackedWidget->setCurrentIndex(4);
     timer->start(30000);
@@ -503,7 +501,6 @@ void MainWindow::on_credit_button_clicked()
 
 void MainWindow::on_withdraw_button_clicked()
 {
-    qDebug()<<"temp withdrawbutton: "+temp_acc_id;
     timer->stop();
     fetch_account_information();
     ui->stackedWidget->setCurrentIndex(5);
@@ -557,7 +554,6 @@ void MainWindow::ShowMoneyInHatch()
 
 int MainWindow::Substract_withdrawal(int e)
 {
-    qDebug()<<"temp arvo substract: "+temp_acc_id;
     double current_balance = balance.toDouble();
     chosen_sum=e;
 
@@ -591,7 +587,6 @@ void MainWindow::on_sulje_button_clicked()
 
 void MainWindow::on_nosto20_button_clicked()
 {
-    qDebug()<<"temp nosto20: "+temp_acc_id;
     timer2->stop();
     qDebug()<<"Return Timer Stopped";
     Substract_withdrawal(20);
