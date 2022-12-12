@@ -469,6 +469,21 @@ response_account_information=reply->readAll();
     ui->tilin_saldo_label->setText("Tilin Saldo: "+balance +"€");
     ui->kayttooikeus_label->setText("Käyttöoikeus: "+account_right);
 
+    ui->pankki_label_2->setText("Pankin Nimi: "+bank_name);
+    ui->tilin_omistaja_label_2->setText("Tilinomistaja: "+account_holder);
+    ui->tilityyppi_label_2->setText("Tilityyppi: "+account_type);
+    ui->tilinumero_label_2->setText("Tilinumero: "+account_number);
+    ui->tilin_saldo_label_2->setText("Tilin Saldo: "+balance +"€");
+    ui->kayttooikeus_label_2->setText("Käyttöoikeus: "+account_right);
+
+    ui->pankki_label_3->setText("Pankin Nimi: "+bank_name);
+    ui->tilin_omistaja_label_3->setText("Tilinomistaja: "+account_holder);
+    ui->tilityyppi_label_3->setText("Tilityyppi: "+account_type);
+    ui->tilinumero_label_3->setText("Tilinumero: "+account_number);
+    ui->tilin_saldo_label_3->setText("Tilin Saldo: "+balance +"€");
+    ui->kayttooikeus_label_3->setText("Käyttöoikeus: "+account_right);
+
+
     reply->deleteLater();
     account_informationManager->deleteLater();
  }
@@ -512,6 +527,8 @@ void MainWindow::on_balance_button_clicked()
 {
     timer->stop();
     fetch_account_information();
+    delay();
+    fetchTransactions();
     ui->stackedWidget->setCurrentIndex(8);
     timer2->start(10000);
     qDebug()<<"Return Timer Started.";
@@ -732,3 +749,104 @@ void MainWindow::update_balanceSlot(QNetworkReply *reply)
 }
 
 //tähän loppuu Nooran tekemät osat -----------------------------------------------------------------------------------------------
+
+void MainWindow::fetchTransactions()
+{
+    // GET:llä haetaan ne kaikki tilikytkökset joihin on kyseinen id_user kytketty
+    qDebug()<<"Asiakkaan arvo edelleen:" + userid;
+    QString site_url=MyUrl::getBaseUrl()+"/transaction/"+temp_acc_id;
+    QNetworkRequest request((site_url));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    //WEBTOKEN ALKU
+    request.setRawHeader(QByteArray("Authorization"),(mytn));
+    //WEBTOKEN LOPPU
+    TransactionManager = new QNetworkAccessManager(this);
+
+    connect(TransactionManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(fetchTransactionsSlot(QNetworkReply*)));
+
+    reply = TransactionManager->get(request);
+}
+
+void MainWindow::fetchTransactionsSlot(QNetworkReply *reply)
+{
+    Transaction_data=reply->readAll();
+    qDebug()<<"DATA : "+Transaction_data;
+    QJsonDocument json_doc = QJsonDocument::fromJson(Transaction_data);
+    on_tili_tilanne_table_cellActivated(json_doc);
+
+    reply->deleteLater();
+    TransactionManager->deleteLater();
+}
+
+void MainWindow::on_tili_tilanne_table_cellActivated(QJsonDocument doc)
+{
+    qDebug()<<"Pyöriikö ohjelma 0? ";
+    ui->tili_tilanne_table->clear();
+    ui->tili_tilanne_table->setRowCount(0);
+    ui->tili_tilanne_table->setColumnCount(3);
+    ui->tili_tilanne_table->setHorizontalHeaderLabels({"Tapahtumapäivä","Tapatumalaji","Summa"});
+
+    QString dateHolder;
+    QStringList splittedDateTime;
+    QTableWidgetItem *date;
+    QTableWidgetItem *type;
+    QTableWidgetItem *sum;
+    QString transactionType;
+    qDebug()<<"Pyöriikö ohjelma 1? ";
+
+    //-Insert Data
+
+    /*QSortFilterProxyModel *tModel = new QSortFilterProxyModel(this);
+    QTableWidget *
+    tili_tilanne_table->setModel(tModel);  */
+
+    int row=0;
+    foreach(const QJsonValue &value, doc.array()){
+        ui->tili_tilanne_table->insertRow(ui->tili_tilanne_table->rowCount());
+        QJsonObject json_obj = value.toObject();
+        qDebug()<<json_obj;
+
+        dateHolder = json_obj["transaction_date"].toString();
+        splittedDateTime = dateHolder.split("T");
+        date = new QTableWidgetItem(splittedDateTime[0]);
+
+        transactionType = json_obj["transaction_type"].toString();
+        type = new QTableWidgetItem(transactionType);
+
+        sum = new QTableWidgetItem(QString::number(json_obj["sum"].toInt()));
+        qDebug()<<"Päivämäärä: "<<date;
+        qDebug()<<"Summa: "<<sum;
+        qDebug()<<"Tyyppi: "<<type;
+
+        ui->tili_tilanne_table->setItem(row, 0, date);
+        ui->tili_tilanne_table->setItem(row, 1, type);
+        ui->tili_tilanne_table->setItem(row, 2, sum);
+        qDebug()<<"Pyöriikö ohjelma 2? ";
+        row++;
+    }
+
+    ui->tili_tilanne_table->resizeColumnsToContents();
+    ui->tili_tilanne_table->resizeRowsToContents();
+    ui->tili_tilanne_table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tili_tilanne_table->setCornerWidget(new QWidget());
+}
+
+
+void MainWindow::on_sulje_button_2_clicked()
+{
+    timer2->stop();
+    qDebug()<<"Return Timer Stopped";
+    timer->start(30000);
+    qDebug()<<"Timer Started";
+    ui->stackedWidget->setCurrentIndex(4);
+}
+
+
+void MainWindow::on_sulje_button_3_clicked()
+{
+    timer2->stop();
+    qDebug()<<"Return Timer Stopped";
+    timer->start(30000);
+    qDebug()<<"Timer Started";
+    ui->stackedWidget->setCurrentIndex(4);
+}

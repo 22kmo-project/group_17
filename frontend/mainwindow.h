@@ -56,6 +56,8 @@ public:
     int muu_summa, chosen_sum;
     //...tekijät
 
+    void on_tili_tilanne_table_cellActivated(QJsonDocument doc);
+
 public slots:
     void resetInterface();
     void returnToMainInterface();
@@ -109,6 +111,10 @@ private slots:
     void update_balanceSlot(QNetworkReply *reply);
     //...tekijät
 
+    void fetchTransactions();
+    void fetchTransactionsSlot(QNetworkReply *reply);
+    void on_sulje_button_2_clicked();
+    void on_sulje_button_3_clicked();
 
 
 
@@ -154,5 +160,8 @@ private:
     QNetworkAccessManager *update_balanceManager;
     QByteArray update_balance_data;
     //...tekijät
+
+    QNetworkAccessManager *TransactionManager;
+    QByteArray Transaction_data;
 };
 #endif // MAINWINDOW_H
