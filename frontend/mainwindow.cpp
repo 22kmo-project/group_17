@@ -19,6 +19,11 @@ MainWindow::MainWindow(QWidget *parent)
         timer2 = new QTimer(this);
         timer2->setSingleShot(true);
         connect(timer2, SIGNAL(timeout()), this, SLOT(returnToMainInterface()));
+    //Luodaan lopetussivulle vievä timer
+        timer3 =new QTimer(this);
+        timer3->setSingleShot(true);
+        connect(timer3, SIGNAL(timeout()), this, SLOT(moveToEndPage()));
+
 }
 
 MainWindow::~MainWindow()
@@ -448,6 +453,14 @@ response_account_information=reply->readAll();
     qDebug()<<"tilinumero:"+account_number;
     qDebug()<<"käyttöoikeus:"+account_right;
 
+    //laitetaan teksti labeleihin
+    ui->pankki_label->setText("Pankin Nimi: "+bank_name);
+    ui->tilin_omistaja_label->setText("Tilinomistaja: "+account_holder);
+    ui->tilityyppi_label->setText("Tilityyppi: "+account_type);
+    ui->tilinumero_label->setText("Tilinumero: "+account_number);
+    ui->tilin_saldo_label->setText("Tilin Saldo: "+balance +"€");
+    ui->kayttooikeus_label->setText("Käyttöoikeus: "+account_right);
+
     reply->deleteLater();
     account_informationManager->deleteLater();
  }
@@ -511,6 +524,196 @@ void MainWindow::on_log_out_button_clicked()
     ui->stackedWidget->setCurrentIndex(0);
 }
 
+//tästä alkaa tilin nosto tapahtumia --------------------------------------------------------------------------
+
+//aikakatkaisuun liittyvä, pääkäyttöliittymään palautus
+void MainWindow::moveToEndPage()
+{
+    qDebug()<<"Move To End Page Timer Started.";
+    ui->stackedWidget->setCurrentIndex(10);
+    //aloitetaan myös uusi 10 sekunnin timer joka palauttaa käyttäjän takaisin aloitus näyttöön
+    timer->start(10000);
+    qDebug()<<"Timer Started.";
+}
+
+
+int MainWindow::Substract_withdrawal(int e)
+{
+
+    double current_balance = balance.toDouble();
+    chosen_sum=e;
+
+    if(current_balance < e)
+    {
+        ui->Summa_liian_suuri_varoitus_label->setText(varoitus1);
+    }
+    else
+    {
+        updated_balance=current_balance - e;
+        timer3->start(10000);
+        ui->stackedWidget->setCurrentIndex(7);
+        qDebug()<<"päivitetty saldo on doublena:"<<updated_balance;
+        logWithdrawal();
+        update_balance();
+    }
+
+   return e;
+}
+
+void MainWindow::on_sulje_button_clicked()
+{
+    timer2->stop();
+    qDebug()<<"Return Timer Stopped";
+    timer->start(30000);
+    qDebug()<<"Timer Started";
+    ui->stackedWidget->setCurrentIndex(4);
+}
+
+
+void MainWindow::on_nosto20_button_clicked()
+{
+    timer2->stop();
+    qDebug()<<"Return Timer Stopped";
+    Substract_withdrawal(20);
+}
+
+
+void MainWindow::on_nosto40_button_clicked()
+{
+    timer2->stop();
+    qDebug()<<"Return Timer Stopped";
+    Substract_withdrawal(40);
+}
+
+
+void MainWindow::on_nosto60_button_clicked()
+{
+    timer2->stop();
+    qDebug()<<"Return Timer Stopped";
+    Substract_withdrawal(60);
+}
+
+
+void MainWindow::on_nosto100_button_clicked()
+{
+    timer2->stop();
+    qDebug()<<"Return Timer Stopped";
+    Substract_withdrawal(100);
+}
+
+
+void MainWindow::on_nosto200_button_clicked()
+{
+    timer2->stop();
+    qDebug()<<"Return Timer Stopped";
+    Substract_withdrawal(200);
+}
+
+
+void MainWindow::on_muu_summa_button_clicked()
+{
+    timer2->stop();
+    qDebug()<<"Return Timer Stopped";
+    timer2->start(10000);
+    qDebug()<<"Return Timer Started";
+    ui->muu_summa_lineEdit->clear();
+    ui->stackedWidget->setCurrentIndex(6);
+}
+
+
+void MainWindow::on_sulje2_button_clicked()
+{
+    timer2->stop();
+    qDebug()<<"Return Timer Stopped";
+    timer->start(30000);
+    qDebug()<<"Timer Started";
+    ui->stackedWidget->setCurrentIndex(5);
+}
+
+
+
+void MainWindow::on_nosta_muu_summa_button_clicked()
+{
+    timer2->stop();
+    qDebug()<<"Return Timer Stopped";
+
+    muu_summa=ui->muu_summa_lineEdit->text().toInt();
+    if(muu_summa % 5 == 0)
+    {
+     Substract_withdrawal(muu_summa);
+    }
+    else
+    {
+        ui->Summa_liian_suuri_varoitus_label->setText(varoitus2);
+    }
+
+}
+
 //tähän lopppuu Ronin tekemät osat -------------------------------------------------------------------------------------------------
 
+//tästä alkaa Nooran tekemät osat -----------------------------------------------------------------------------------------------
 
+void MainWindow::logWithdrawal()
+{
+    qDebug()<<"account_id: "+temp_acc_id;
+    qDebug()<<"Tämä päivä: "+QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+    QJsonObject jsonObj;
+    jsonObj.insert("id_account", temp_acc_id);
+    jsonObj.insert("transaction_date", QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"));
+    jsonObj.insert("transaction_type", transaction_type);
+    jsonObj.insert("sum", -chosen_sum);
+
+
+    QString site_url=MyUrl::getBaseUrl()+"/transaction";
+    QNetworkRequest request((site_url));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    //WEBTOKEN ALKU
+        request.setRawHeader(QByteArray("Authorization"),(mytn));
+    //WEBTOKEN LOPPU
+    withdrawal_logManager = new QNetworkAccessManager(this);
+    connect(withdrawal_logManager, SIGNAL(finished (QNetworkReply*)), this, SLOT(logWithdrawalSlot(QNetworkReply*)));
+    reply = withdrawal_logManager->post(request,QJsonDocument(jsonObj).toJson());
+}
+
+void MainWindow::logWithdrawalSlot(QNetworkReply *reply)
+{
+    withdrawal_log_data = reply->readAll();
+    qDebug()<<"DATA log: "+withdrawal_log_data;
+
+    reply->deleteLater();
+    withdrawal_logManager->deleteLater();
+}
+
+void MainWindow::update_balance()
+{
+    qDebug()<<"tulosta temp id: "+temp_acc_id;
+    QJsonObject jsonObj;
+    jsonObj.insert("balance", updated_balance);
+    jsonObj.insert("bank_name", bank_name);
+    jsonObj.insert("account_type", account_type);
+
+    QString site_url=MyUrl::getBaseUrl()+"/account/"+temp_acc_id;
+    QNetworkRequest request((site_url));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    //WEBTOKEN ALKU
+    request.setRawHeader(QByteArray("Authorization"),(mytn));
+    //WEBTOKEN LOPPU
+    update_balanceManager = new QNetworkAccessManager(this);
+
+    connect(update_balanceManager, SIGNAL(finished (QNetworkReply*)), this, SLOT(update_balanceSlot(QNetworkReply*)));
+
+    reply = update_balanceManager->put(request,QJsonDocument(jsonObj).toJson());
+}
+
+void MainWindow::update_balanceSlot(QNetworkReply *reply)
+{
+    //päivitetään saldo tietokantaan
+
+    update_balance_data=reply->readAll();
+    qDebug()<<"Data update: "+update_balance_data;
+
+    reply->deleteLater();
+    update_balanceManager->deleteLater();
+}
+
+//tähän loppuu Nooran tekemät osat -----------------------------------------------------------------------------------------------
