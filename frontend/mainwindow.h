@@ -30,15 +30,28 @@ public:
     QString account_id_1;
     QString account_id_2;
     QByteArray mytn;
+
     QString logged_un;
+    QString bank_name, account_holder,account_type, account_number, account_right, balance, fname, lname;
+    QString tallennus_at1, tallennus_an1, tallennus_at2, tallennus_an2;
+    QString current_account_number;
+    QString temp_acc_id;
 
     void setWebToken(const QByteArray &newWebToken);
     void setUsername(const QString &loggedUser);
     //...tekijät
 
+    void setSaved_AccountType1(const QString &savedAT1);
+    void setSaved_AccountNumber1(const QString &savedAN1);
+    void setSaved_AccountType2(const QString &savedAT2);
+    void setSaved_AccountNumber2(const QString &savedAN2);
+    void setAccId(const QString &usedAccId);
+    void setAccoundId(const QString &usedAccountId);
+    void setAccoundId2(const QString &usedAccountId2);
+
 public slots:
     void resetInterface();
-
+    void returnToMainInterface();
 private slots:
 
     //Login-toiminnallisuuteen liittyvät...
@@ -52,6 +65,21 @@ private slots:
     void fetchHowManyAccSlot(QNetworkReply *reply);
     //...tekijät
 
+    void on_debit_button_clicked();
+    void on_credit_button_clicked();
+    void fetch_user_full_name();
+    void user_full_nameSlot(QNetworkReply *reply);
+    void fetch_account_information();
+    void account_informationSlot (QNetworkReply *reply);
+    void fetch_DataForCompare(QString);
+    void CompareDataSlot (QNetworkReply *reply);
+    QString CreditOrDebit_testing(QString);
+    QString OnlyOneAccount(QString);
+    void on_withdraw_button_clicked();
+    void on_balance_button_clicked();
+    void on_transactions_button_clicked();
+    void on_log_out_button_clicked();
+    void delay();
 private:
     Ui::MainWindow *ui;
 
@@ -70,5 +98,17 @@ private:
     QString warning3 = "VIRHEELLINEN KÄYTTÄJÄTUNNUS TAI PIN-KOODI! YRITÄ UUDELLEEN. \nYRITYSKERTOJA JÄLJELLÄ: ";
     QTimer *timer;
     //...tekijät
+
+    QNetworkAccessManager *account_informationManager;
+    QNetworkAccessManager *fetchUserFullNameManager;
+    QNetworkAccessManager *CompareDataManager;
+    QByteArray response_account_information;
+    QByteArray response_user_fullname;
+    QByteArray response_CompareData;
+    QTimer *timer2;
+    QString test_at1, test_an1;
+    QString debit ="Debit";
+    QString credit = "Credit";
+
 };
 #endif // MAINWINDOW_H
