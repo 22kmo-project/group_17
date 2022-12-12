@@ -113,9 +113,7 @@ private slots:
 
     void fetchTransactions();
     void fetchTransactionsSlot(QNetworkReply *reply);
-
     void on_sulje_button_2_clicked();
-
     void on_sulje_button_3_clicked();
 
 private:

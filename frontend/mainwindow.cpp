@@ -848,4 +848,3 @@ void MainWindow::on_sulje_button_3_clicked()
     qDebug()<<"Timer Started";
     ui->stackedWidget->setCurrentIndex(4);
 }
-
