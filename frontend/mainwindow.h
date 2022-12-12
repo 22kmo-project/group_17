@@ -116,8 +116,6 @@ private slots:
     void on_sulje_button_2_clicked();
     void on_sulje_button_3_clicked();
 
-
-
 private:
     Ui::MainWindow *ui;
 
@@ -163,5 +161,6 @@ private:
 
     QNetworkAccessManager *TransactionManager;
     QByteArray Transaction_data;
+
 };
 #endif // MAINWINDOW_H

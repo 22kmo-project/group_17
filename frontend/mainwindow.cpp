@@ -23,12 +23,10 @@ MainWindow::MainWindow(QWidget *parent)
         timer3 =new QTimer(this);
         timer3->setSingleShot(true);
         connect(timer3, SIGNAL(timeout()), this, SLOT(moveToEndPage()));
-
     //Luodaan rahat luukussa tekstin näyttävä timer
         timer4 =new QTimer(this);
         timer4->setSingleShot(true);
         connect(timer4, SIGNAL(timeout()), this, SLOT(ShowMoneyInHatch()));
-
 }
 
 MainWindow::~MainWindow()
@@ -363,6 +361,7 @@ void MainWindow::fetch_DataForCompare(QString id)
 
     reply = CompareDataManager->get(request);
 }
+
 //tallennetaan testiarvot vertailua varten muuttujiin
 void MainWindow::CompareDataSlot (QNetworkReply *reply)
 {
@@ -483,7 +482,6 @@ response_account_information=reply->readAll();
     ui->tilin_saldo_label_3->setText("Tilin Saldo: "+balance +"€");
     ui->kayttooikeus_label_3->setText("Käyttöoikeus: "+account_right);
 
-
     reply->deleteLater();
     account_informationManager->deleteLater();
  }
@@ -503,8 +501,6 @@ void MainWindow::on_debit_button_clicked()
     timer->start(30000);
     qDebug()<<"Timer Started.";
 }
-
-
 
 void MainWindow::on_credit_button_clicked()
 {
@@ -538,6 +534,8 @@ void MainWindow::on_transactions_button_clicked()
 {
     timer->stop();
     fetch_account_information();
+    delay();
+    fetchTransactions();
     ui->stackedWidget->setCurrentIndex(9);
     timer2->start(10000);
     qDebug()<<"Return Timer Started.";
