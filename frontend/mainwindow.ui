@@ -105,9 +105,6 @@
         <pointsize>20</pointsize>
        </font>
       </property>
-      <property name="text">
-       <string/></string>
-      </property>
       <property name="maxLength">
        <number>6</number>
       </property>
