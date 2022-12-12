@@ -24,6 +24,11 @@ MainWindow::MainWindow(QWidget *parent)
         timer3->setSingleShot(true);
         connect(timer3, SIGNAL(timeout()), this, SLOT(moveToEndPage()));
 
+    //Luodaan rahat luukussa tekstin näyttävä timer
+        timer4 =new QTimer(this);
+        timer4->setSingleShot(true);
+        connect(timer4, SIGNAL(timeout()), this, SLOT(ShowMoneyInHatch()));
+
 }
 
 MainWindow::~MainWindow()
@@ -536,6 +541,13 @@ void MainWindow::moveToEndPage()
     qDebug()<<"Timer Started.";
 }
 
+//aikakatkaisuun liittyvä, rahat luukussa tekstin asetus
+void MainWindow::ShowMoneyInHatch()
+{
+    qDebug()<<"Show rahat luukussa label.";
+    ui->setelit_syottoluukussa_label->setText("...Setelit syöttöluukussa, ota rahat!");
+    //aloitetaan myös uusi 10 sekunnin timer joka palauttaa käyttäjän takaisin aloitus näyttöön
+}
 
 int MainWindow::Substract_withdrawal(int e)
 {
@@ -550,6 +562,7 @@ int MainWindow::Substract_withdrawal(int e)
     else
     {
         updated_balance=current_balance - e;
+        timer4->start(5000);
         timer3->start(10000);
         ui->stackedWidget->setCurrentIndex(7);
         qDebug()<<"päivitetty saldo on doublena:"<<updated_balance;

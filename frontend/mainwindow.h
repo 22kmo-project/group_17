@@ -54,13 +54,13 @@ public:
     //tilin nostoon...liittyvät
     double updated_balance;
     int muu_summa, chosen_sum;
-
     //...tekijät
 
 public slots:
     void resetInterface();
     void returnToMainInterface();
     void moveToEndPage();
+    void ShowMoneyInHatch();
 private slots:
 
     //Login-toiminnallisuuteen liittyvät...
@@ -147,6 +147,7 @@ private:
     QString varoitus1 = "Syötettyä summaa ei voida nostaa! Kokeile pienempää summaa";
     QString varoitus2 = "Ei seteleitä saatavilla, syötä muu summa";
     QTimer *timer3;
+    QTimer *timer4;
     QNetworkAccessManager *withdrawal_logManager;
     QByteArray withdrawal_log_data;
     QString transaction_type = "NOSTO";
